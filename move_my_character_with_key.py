@@ -154,6 +154,14 @@ def rendering():
 
         x+= dirX * 10
         y+= dirY * 10
+        if(x >= TUK_WIDTH - 30):
+            x = TUK_WIDTH - 30
+        elif(x<=30):
+            x = 30
+        if(y >= TUK_HEIGHT - 30):
+            y = TUK_HEIGHT - 30
+        elif(y<=30):
+            y = 30
         delay(0.05)
 
         if not running:
