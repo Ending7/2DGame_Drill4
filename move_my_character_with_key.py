@@ -6,53 +6,53 @@ TUK_WIDTH, TUK_HEIGHT = 1280, 1024
 open_canvas(TUK_WIDTH, TUK_HEIGHT)
 tuk_ground = load_image('TUK_GROUND.png')
 player = load_image('player.png')
-
 running = True
+
 x, y = TUK_WIDTH // 2, TUK_HEIGHT // 2
 dirX, dirY, motion, tempmotion, index = 0, 0, 0, 3, 0
+def again(frame):
+    global index, x, y  
+    frameX, frameY, width, height = frame[index]
+    if motion == 0 or motion == 3 or motion == 5 or motion == 7:
+        player.clip_draw(frameX,frameY,width,height,x,y, 100,100)
+    elif motion == 1 or motion == 2 or motion == 4 or motion == 6:
+        player.clip_composite_draw(frameX,frameY,width,height, 0, 'h', x, y, 100,100)
 
 def player_idle():
-    global index, x, y  
+    global index  
     frame = [(32, 683-72,39,45), (83, 683-72,39,45), (132, 683-72,39,45), (182, 683-72,39,45)]
-    frameX, frameY, width, height = frame[index]
-    if motion == 0:
-        player.clip_draw(frameX,frameY,width,height,x,y, 100,100)
-    elif motion == 1:
-        player.clip_composite_draw(frameX,frameY,width,height, 0, 'h', x, y, 100,100)
+    again(frame) 
     index += 1
     if(index == 4):
         index = 0
 
-def player_heading():
-    pass
 def player_die():
-    pass
-def player_jump():
-    pass
+    global index
+    frame = [(32, 683-203,35,50), (70, 683-203,40,50), (120,683-203,57,50), (180,683-203,43,50), (227,683-203,43,50)]
+    again(frame) 
+    index += 1
+    if(index == 5):
+        index = 0
 def player_attack():
     pass
 def player_run():
-    global index, x, y 
+    global index
     frame = [(27,683-428,40,45), (71, 683-428,41,45), (123,683-428,38,45), 
     (173,683-428,33,45), (213,683-428,46,45), (261,683-428,41,45), 
     (312,683-428,38,45), (358,683-428,32,45)]
-    frameX, frameY, width, height = frame[index]
-    if motion == 3 or motion == 5:
-        player.clip_draw(frameX,frameY,width,height,x,y, 100,100)
-    elif motion == 2 or motion == 4:
-        player.clip_composite_draw(frameX,frameY,width,height, 0, 'h', x, y, 100,100)
+    again(frame)
     index += 1
     if(index == 8):
         index = 0
 
-def player_jump2():
-    pass
 def player_animation():
     global dirX, dirY, motion
     if motion == 0 or motion == 1:
         player_idle()        
     if motion == 2 or motion == 3 or motion == 4 or motion == 5:
         player_run()
+    if motion == 6 or motion == 7:
+        player_die()
 
 def handle_events():
     global running, dirX, dirY, index, motion, tempmotion
@@ -83,6 +83,13 @@ def handle_events():
                     motion = 4
                 if tempmotion == 3:
                     motion = 5
+            elif event.key == SDLK_d:
+
+                index = 0
+                if tempmotion == 2:
+                    motion = 6
+                if tempmotion == 3:
+                    motion = 7
 
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
@@ -111,6 +118,9 @@ def handle_events():
                     elif tempmotion == 3:
                         motion = 0
                 index = 0  
+            elif event.key == SDLK_d:
+                index = 0
+
 
 def rendering():
     global dirX, dirY, x, y
